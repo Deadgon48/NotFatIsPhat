@@ -1,4 +1,7 @@
 # nofatisphat-frontend
+crear .env con la VITE_API_BASE_URL
+luego ejecutar en terminal:
+ git rm --cached .env
 
 This template should help get you started developing with Vue 3 in Vite.
 
