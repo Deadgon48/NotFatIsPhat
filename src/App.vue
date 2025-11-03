@@ -1,47 +1,45 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <h1 class="app-logo green">NoFatIsPhat</h1>
+    <nav>
+      <a href="/inicio">Home</a>
+      <a href="/profile">Perfil</a>
+      <a href="/settings">Ajustes</a>
+    </nav>
   </header>
 
   <main>
-    <TheWelcome />
+    <router-view />
   </main>
+
+
+
 </template>
 
 <style scoped>
+
 header {
-  line-height: 1.5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1280px;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-logo {
+  font-size: 1.5rem;
+  font-weight: 900;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+nav a {
+  margin-left: 1.5rem;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+main {
+  padding: 0;
 }
 </style>
