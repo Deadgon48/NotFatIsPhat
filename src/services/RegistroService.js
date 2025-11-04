@@ -1,15 +1,14 @@
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 class RegistroService {
 
     async registerUser(user) {
 
         const payload = user.toJSON();
-        console.log("Enviando datos de registro a:", `${API_BASE_URL}/users/register`);
+        console.log("Enviando datos de registro a:", `${API_BASE_URL}/auth/register`);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/users/register`, {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -18,8 +17,8 @@ class RegistroService {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: 'Error desconocido del servidor.' }));
-                throw new Error(errorData.message || `Fallo el registro. Código: ${response.status}`);
+                const errorData = await response.json().catch(() => ({ error: 'Error desconocido del servidor.' }));
+                throw new Error(errorData.error || `Fallo el registro. Código: ${response.status}`);
             }
 
             return response.json();
