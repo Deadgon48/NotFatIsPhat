@@ -165,7 +165,7 @@ export default defineComponent({
           // 4. Envía el .value al servicio
           const response = await registroService.registerUser(userModel.value);
           alert('¡Registro exitoso! Redirigiendo al Login...');
-          router.push('/login');
+          router.push('/ingresar');
 
         } catch (error) {
           console.error("Error de registro:", error);

@@ -49,7 +49,7 @@ class AuthService {
         console.log("Solicitando recuperación para:", email);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/recover-password`, { // Ajusta el endpoint
+            const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, { // Ajusta el endpoint
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
