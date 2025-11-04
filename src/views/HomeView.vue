@@ -20,7 +20,7 @@
         <p>
           Inicia sesión con tu correo electrónico y contraseña para acceder a tu panel de control.
         </p>
-        <router-link to="/login" class="button-secondary login-link">
+        <router-link to="/ingresar" class="button-secondary login-link">
           Iniciar Sesión
         </router-link>
       </div>
