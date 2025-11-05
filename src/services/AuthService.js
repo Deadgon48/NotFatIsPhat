@@ -1,75 +1,72 @@
 // src/services/AuthService.js
 
-// Importamos el modelo necesario para el login (asumimos que está en el directorio correcto)
-import {Login} from '@/models/Login';
+import { Login } from '@/models/Login';
 
-// 🌐 URL Base: Usa la misma variable de entorno que definiste
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 class AuthService {
-//LMAOOO ASI SE COMENTA BIEEEN CHIDOOO
-    /**
-     * Maneja la petición de inicio de sesión.
-     * @param {Login} data - Instancia del modelo LoginData.
-     * @returns {Promise<Object>} - Datos del usuario o token.
-     */
-    async login(data) {
-        const payload = data.toJSON();
-        console.log("Intentando iniciar sesión en:", `${API_BASE_URL}/auth/login`);
+  /**
+   * Inicia sesión y persiste la cookie de sesión.
+   * @param {Login|Object} data
+   */
+  async login(data) {
+    const payload =
+      data instanceof Login && typeof data.toJSON === 'function'
+        ? data.toJSON()
+        : data;
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-                credentials: 'include'
-            });
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // importante para cookies de sesión
+      body: JSON.stringify(payload),
+    });
 
-            if (!response.ok) {
-                // Manejo de errores 4xx o 5xx
-                const errorData = await response.json().catch(() => ({error: 'Credenciales inválidas o error de red.'}));
-                throw new Error(errorData.error || `Fallo el inicio de sesión. Código: ${response.status}`);
-            }
-
-            return response.json();
-        } catch (error) {
-            console.error('Error durante el login:', error);
-            throw error; // Propagar el error al ViewModel
-        }
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(json.error || `Fallo el inicio de sesión. Código: ${res.status}`);
     }
+    return json; // { ok:true, user:{...} }
+  }
 
-    /**
-     * Maneja la solicitud de recuperación de contraseña.
-     * @param {string} email - El correo electrónico del usuario.
-     * @returns {Promise<Object>} - Mensaje de éxito/estado.
-     */
-    async requestPasswordRecovery(email) {
-        const payload = {email}; // Objeto JSON simple
-        console.log("Solicitando recuperación para:", email);
+  /** Verifica si hay sesión activa. */
+  async session() {
+    const res = await fetch(`${API_BASE_URL}/auth/session`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    return res.json();
+  }
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, { // Ajusta el endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
+  /** Cierra sesión en el backend. */
+  async logout() {
+    const res = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || `Error al cerrar sesión (${res.status})`);
+    return json;
+  }
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({error: 'El email no fue encontrado o hubo un error del servidor.'}));
-                throw new Error(errorData.error || `Error al solicitar recuperación. Código: ${response.status}`);
-            }
+  /**
+   * Solicita recuperación de contraseña.
+   * @param {string} email
+   */
+  async requestPasswordRecovery(email) {
+    const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email }),
+    });
 
-            return {message: 'Enlace de recuperación enviado.'};
-        } catch (error) {
-            console.error('Error en la solicitud de recuperación:', error);
-            throw error;
-        }
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(json.error || `Error al solicitar recuperación. Código: ${res.status}`);
     }
+    return { message: 'Enlace de recuperación enviado.' };
+  }
 }
 
-// 📦 Exportamos una instancia única (Singleton) para usar en toda la app
 export const authService = new AuthService();
