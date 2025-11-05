@@ -18,10 +18,7 @@
           <p>Diseñar, asignar y modificar dietas, objetivos calóricos y rutinas.</p>
         </router-link>
 
-        <router-link to="/nutriologo/agenda" class="card soft-background">
-          <h3>📅 Agenda y Citas</h3>
-          <p>Ver disponibilidad, programar y confirmar consultas con pacientes.</p>
-        </router-link>
+
 
         <router-link to="/nutriologo/recetas" class="card soft-background">
           <h3>📚 Biblioteca de Recetas</h3>
@@ -51,15 +48,19 @@
 
 <script setup>
 // Usamos Composition API para la lógica (ViewModel)
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue'; // 1. Importa 'computed'
 import { useRouter } from 'vue-router';
-// Asumimos que existe un servicio de autenticación para el logout
+import { ref, onMounted } from 'vue';
 import { authService } from '@/services/AuthService';
+import { useAuthStore } from '@/stores/authStore'; // 1. Importa Pinia
 
 const router = useRouter();
+const authStore = useAuthStore(); // 2. Obtiene la instancia del store
 
-//HACER QUE LO TOME DEL USER (MANDARLO A LLAMAR DESDE LA API APARTIR DEL CORREO O SU ID)
-const userName = ref("Andrea Gómez");
+// 2. REEMPLAZO: 'userName' ahora es una propiedad reactiva
+//    que lee el nombre guardado en Pinia.
+//    (Tu API de login devuelve 'name' como 'first_name + last_name')
+const userName = computed(() => authStore.user?.name || 'Nutriólogo');
 
 // --- Lógica del Ciclo de Vida ---
 onMounted(() => {
