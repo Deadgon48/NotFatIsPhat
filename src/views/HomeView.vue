@@ -7,7 +7,7 @@
 
       <div class="auth-card soft-background">
         <h3>👥 Regístrate Hoy</h3>
-        <p>
+        <p class="p-reg-log">
           Comienza tu camino hacia una vida más saludable. Ingresa tus datos para crear una cuenta.
         </p>
         <router-link to="/registro" class="button-cta register-link">
@@ -17,7 +17,7 @@
 
       <div class="auth-card mute-background">
         <h3>📝 ¿Ya tienes una cuenta?</h3>
-        <p>
+        <p class="p-reg-log">
           Inicia sesión con tu correo electrónico y contraseña para acceder a tu panel de control.
         </p>
         <router-link to="/ingresar" class="button-secondary login-link">
@@ -134,6 +134,10 @@
 
 .mute-background {
   background-color: var(--color-background-mute);
+}
+
+.p-reg-log{
+  height: 3.5rem;
 }
 
 </style>

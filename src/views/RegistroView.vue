@@ -78,7 +78,7 @@
                     <p v-if="userModel.errors.objetivo" class="error-message">{{ userModel.errors.objetivo }}</p>
                   </div>
                   <div class="form-group">
-                    <label>¿Tienes alergias o intolerancias? (Opcional)</label>
+                    <label>¿Tienes alergias o intolerancias?</label>
 
                     <div class="alergias-listbox">
 
@@ -269,20 +269,6 @@ export default defineComponent({
   margin-top: 2rem;
 }
 .button-cta {
-  background-color: var(--nfip-c-orange-energy);
-  color: var(--vt-c-white);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 30px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-.button-cta:hover {
-  background-color: var(--nfip-c-orange-soft);
-}
-.button-secondary {
   background-color: var(--nfip-c-green-health);
   color: var(--vt-c-white);
   border: none;
@@ -293,8 +279,22 @@ export default defineComponent({
   font-weight: 600;
   transition: background-color 0.3s;
 }
+.button-cta:hover {
+  background-color: var(--nfip-c-green-dark );
+}
+.button-secondary {
+  background-color: var(--nfip-c-orange-energy);
+  color: var(--vt-c-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
 .button-secondary:hover {
-  background-color: var(--nfip-c-green-dark);
+  background-color: var( --nfip-c-orange-soft);
 }
 
 .alergias-listbox {
