@@ -8,6 +8,7 @@ import NutriologoLayoutView from "@/Layouts/NutriologoLayoutView.vue";
 import NutriologoView from "@/views/NutriologoView.vue";
 import MisPacientesView from "@/views/MisPacientesView.vue";
 import {useAuthStore} from "@/stores/authStore.js";
+import AdminDashboard from "@/views/AdminDashboard.vue"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,13 @@ const router = createRouter({
                 // ... otras rutas del Nutriólogo
             ],
         },
+        { // <-- 2. AÑADIR LA NUEVA RUTA
+            path: '/admin',
+            name: 'AdminDashboard',
+            component: AdminDashboard
+            // Opcional: Aquí se podría añadir un "navigation guard"
+            // para verificar el rol desde el frontend también.
+        },
 
         // Rutas del Paciente (Protegidas)
 
@@ -79,3 +87,4 @@ router.beforeEach((to, from, next) => {
 
 
 export default router
+
