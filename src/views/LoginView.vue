@@ -231,22 +231,20 @@ const handleLogin = async () => {
       // El 'response' de tu API ya incluye los datos del usuario, incluido el rol
       // Ej: { ok: true, user: { id: 1, name: 'Admin', role: 'Administrador' } }
       const response = await authService.login(loginModel.value);
+      authStore.login(response.user);
 
-      if (!response.user || !response.user.role) {
-        throw new Error("La respuesta del login no incluyó el rol del usuario.");
-      }
-
-      // --- ¡NUEVA LÓGICA DE REDIRECCIÓN POR ROL! ---
-      // Comprobamos el rol que nos envió el backend
-      if (response.user.role === 'Administrador') {
-
+      if (authStore.userRole === 'Nutriologo') {
+        router.push('/nutriologo/dashboard');
+      } else if (authStore.userRole === 'Paciente') {
+        router.push('/paciente/dashboard');
+      } else if (response.user.role === 'Administrador') {
         router.push('/admin'); // 1. Redirige al admin al nuevo panel
-
       } else {
-
-        router.push('/dashboard'); // 2. Redirige a Nutriólogos y Pacientes al dashboard normal
+        router.push('/'); // 2. Redirige a Nutriólogos y Pacientes al dashboard normal
 
       }
+
+
 
     } catch (error) {
       apiError.value = error.message || 'Error al conectar con el servidor.';
