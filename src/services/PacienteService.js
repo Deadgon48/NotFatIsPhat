@@ -1,128 +1,113 @@
 /**
- * ----------------------------------------------------------------
+ * ---------------------------------------------------------------
  * 🚚 SERVICIO DE PACIENTES (PacienteService)
- * ----------------------------------------------------------------
- * Este archivo actúa como el "puente" entre tus componentes de Vue
- * (la Vista) y tu API de backend (Node/Express).
- *
- * Su única responsabilidad es manejar las peticiones HTTP (fetch)
- * y devolver los datos (o errores) a la vista.
- * ----------------------------------------------------------------
+ * ---------------------------------------------------------------
+ * Puente entre tus componentes Vue y la API (Node/Express).
+ * Maneja llamadas HTTP y devuelve datos/errores.
+ * ---------------------------------------------------------------
  */
 
-// Importa la URL base de tu API desde el archivo .env
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
-class PacienteService {
-
-    /**
-     * ----------------------------------------------------------------
-     * 1. OBTENER LOS PACIENTES DEL NUTRIÓLOGO (La función que tu vista necesita)
-     * ----------------------------------------------------------------
-     * Llama a la API para obtener la lista de pacientes asignados
-     * al nutriólogo que está actualmente logueado.
-     */
-    async getNutriologoPatients() {
-        // La URL final será: http://localhost:3001/api/pacientes/mis-pacientes
-        const url = `${API_BASE_URL}/pacientes/mis-pacientes`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // (Otras cabeceras si fueran necesarias, como Tokens)
-                },
-
-                // ¡LA PARTE MÁS IMPORTANTE!
-                // Esto envía la cookie de sesión (httpOnly) al backend,
-                // permitiendo que tu API sepa qué nutriólogo está
-                // haciendo la petición.
-                credentials: 'include',
-            });
-
-            // Manejo de errores de la API
-            if (!response.ok) {
-                // Intenta leer el error que envía la API
-                const errorData = await response.json().catch(() => ({ error: 'Error desconocido del servidor.' }));
-                throw new Error(errorData.error || `Error ${response.status}: No se pudo obtener la lista de pacientes.`);
-            }
-
-            // Si todo salió bien, devuelve los datos
-            return response.json();
-
-        } catch (error) {
-            console.error('Error en PacienteService.getNutriologoPatients:', error);
-            // Vuelve a lanzar el error para que el componente .vue (MisPacientesView)
-            // lo pueda atrapar en su propio try...catch y mostrarlo al usuario.
-            throw error;
-        }
-    }
-
-    /**
-     * ----------------------------------------------------------------
-     * 2. OBTENER DETALLES DE UN PACIENTE (Para la vista de detalle)
-     * ----------------------------------------------------------------
-     * Tu código tiene: router.push(`/nutriologo/pacientes/${patientId}`);
-     * La vista de detalle (ej. PacienteDetalleView.vue) necesitará esta
-     * función para obtener los datos de un solo paciente.
-     */
-    async getPatientById(patientId) {
-        const url = `${API_BASE_URL}/pacientes/${patientId}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include', // También necesita saber si estás autenticado
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Error ${response.status}: No se pudo encontrar al paciente.`);
-            }
-
-            return response.json();
-
-        } catch (error) {
-            console.error('Error en PacienteService.getPatientById:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * ----------------------------------------------------------------
-     * 3. CREAR UN NUEVO PACIENTE (Para tu botón "Agregar Nuevo Paciente")
-     * ----------------------------------------------------------------
-     * Tu código tiene: openNewPatientModal()
-     * Cuando ese modal se confirme, llamará a esta función.
-     *
-     * @param {object} patientData - Los datos del nuevo paciente (nombre, email, etc.)
-     */
-    async createPatient(patientData) {
-        const url = `${API_BASE_URL}/pacientes/crear`; // O la ruta que definas
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(patientData), // Envía los datos
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Error ${response.status}: No se pudo crear el paciente.`);
-            }
-
-            return response.json(); // Devuelve el paciente recién creado
-
-        } catch (error) {
-            console.error('Error en PacienteService.createPatient:', error);
-            throw error;
-        }
-    }
+// Pequeño helper para construir URLs con query params
+function buildUrl(path, params = {}) {
+  const url = new URL(`${API_BASE_URL}${path}`);
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
+  });
+  return url.toString();
 }
 
-// Exportamos una instancia única (Singleton) del servicio
-// para que toda la aplicación use la misma conexión.
+class PacienteService {
+  // ===== Helpers internos =====
+  async _request(input, init = {}) {
+    const resp = await fetch(input, {
+      credentials: 'include', // CLAVE: cookie de sesión
+      headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },
+      ...init,
+    });
+
+    // Intenta parsear JSON incluso en error
+    let data = null;
+    try {
+      data = await resp.json();
+    } catch {
+      /* noop */
+    }
+
+    if (!resp.ok) {
+      const msg =
+        (data && (data.error || data.message)) ||
+        (resp.status === 401
+          ? 'UNAUTHORIZED'
+          : `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  /**
+   * ---------------------------------------------------------------
+   * 1) Mis Pacientes (asignados al nutriólogo actual)
+   * GET /api/pacientes/mis-pacientes?q=&limit=&offset=
+   * ---------------------------------------------------------------
+   */
+  async getNutriologoPatients(q = '', limit = 20, offset = 0) {
+    const url = buildUrl('/pacientes/mis-pacientes', { q, limit, offset });
+    return this._request(url, { method: 'GET' });
+  }
+
+  /**
+   * ---------------------------------------------------------------
+   * 2) Buscar pacientes en TODO el sistema (para asignar)
+   * GET /api/pacientes/buscar?q=&limit=&offset=
+   * ---------------------------------------------------------------
+   */
+  async searchPatients(q = '', limit = 20, offset = 0) {
+    const url = buildUrl('/pacientes/buscar', { q, limit, offset });
+    return this._request(url, { method: 'GET' });
+  }
+
+  /**
+   * ---------------------------------------------------------------
+   * 3) Asignar paciente existente a “Mis Pacientes”
+   * POST /api/pacientes/asignar  { patient_id }
+   * ---------------------------------------------------------------
+   */
+  async assignPatient(patientId) {
+    return this._request(`${API_BASE_URL}/pacientes/asignar`, {
+      method: 'POST',
+      body: JSON.stringify({ patient_id: patientId }),
+    });
+  }
+
+  /**
+   * ---------------------------------------------------------------
+   * 4) Detalle de un paciente (solo si te pertenece)
+   * GET /api/pacientes/:id
+   * ---------------------------------------------------------------
+   */
+  async getPatientById(patientId) {
+    return this._request(`${API_BASE_URL}/pacientes/${patientId}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * ---------------------------------------------------------------
+   * 5) Crear paciente nuevo y asignarlo al nutriólogo actual
+   * POST /api/pacientes/crear  {...patientData}
+   * ---------------------------------------------------------------
+   */
+  async createPatient(patientData) {
+    return this._request(`${API_BASE_URL}/pacientes/crear`, {
+      method: 'POST',
+      body: JSON.stringify(patientData),
+    });
+  }
+}
+
+// Exporta como singleton (y default por conveniencia)
 export const pacienteService = new PacienteService();
+export default pacienteService;
