@@ -1,7 +1,7 @@
 // src/services/AuthService.js
 
 // Importamos el modelo necesario para el login (asumimos que está en el directorio correcto)
-import { Login } from '@/models/Login';
+import {Login} from '@/models/Login';
 
 // 🌐 URL Base: Usa la misma variable de entorno que definiste
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -23,12 +23,13 @@ class AuthService {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                credentials: 'include'
             });
 
             if (!response.ok) {
                 // Manejo de errores 4xx o 5xx
-                const errorData = await response.json().catch(() => ({ error: 'Credenciales inválidas o error de red.' }));
+                const errorData = await response.json().catch(() => ({error: 'Credenciales inválidas o error de red.'}));
                 throw new Error(errorData.error || `Fallo el inicio de sesión. Código: ${response.status}`);
             }
 
@@ -45,7 +46,7 @@ class AuthService {
      * @returns {Promise<Object>} - Mensaje de éxito/estado.
      */
     async requestPasswordRecovery(email) {
-        const payload = { email }; // Objeto JSON simple
+        const payload = {email}; // Objeto JSON simple
         console.log("Solicitando recuperación para:", email);
 
         try {
@@ -58,11 +59,11 @@ class AuthService {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: 'El email no fue encontrado o hubo un error del servidor.' }));
+                const errorData = await response.json().catch(() => ({error: 'El email no fue encontrado o hubo un error del servidor.'}));
                 throw new Error(errorData.error || `Error al solicitar recuperación. Código: ${response.status}`);
             }
 
-            return { message: 'Enlace de recuperación enviado.' };
+            return {message: 'Enlace de recuperación enviado.'};
         } catch (error) {
             console.error('Error en la solicitud de recuperación:', error);
             throw error;
