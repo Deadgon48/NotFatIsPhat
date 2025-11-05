@@ -28,6 +28,7 @@
       </nav>
 
       <div class="user-footer">
+        <!-- El template usa 'userName' (que ahora es reactivo) -->
         <span class="username">{{ userName }}</span>
         <button @click="handleLogout" class="logout-button">
           Cerrar Sesión
@@ -40,33 +41,53 @@
         <h1>{{ $route.meta.title || "Panel de Control" }}</h1>
       </header>
 
+      <!-- Aquí se renderizan las vistas hijas (Dashboard, MisPacientes, etc.) -->
       <router-view />
 
     </main>
   </div>
 </template>
 
+<!-- ============================================== -->
+
 <script setup>
-import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-// Asumimos un stores para obtener el nombre del usuario
-// import { useAuthStore } from '@/stores/auth';
+// 3. 🧠 Capa JavaScript (El ViewModel)
+import { computed } from 'vue'; // 1. Importa 'computed'
+import { useRouter, useRoute, RouterLink, RouterView } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore'; // 1. Importa Pinia
+import { authService } from '@/services/AuthService'; // 1. Importa el servicio
 
 const router = useRouter();
 const route = useRoute(); // Para acceder a la información de la ruta actual
+const authStore = useAuthStore(); // 2. Obtiene la instancia del store
 
-// Simulación de datos (En un proyecto real, vendría del stores)
-const userName = ref("Nutriólogo(a)");
+// 2. REEMPLAZO: 'userName' ahora es una propiedad reactiva
+//    que lee el nombre guardado en Pinia.
+const userName = computed(() => authStore.user?.name || 'Nutriólogo');
 
+// 3. REEMPLAZO: Lógica de Logout completa
 const handleLogout = async () => {
-  // Lógica para llamar a authService.logout() y redirigir
-  alert('Cerrando sesión...');
-  router.push('/ingresar');
+  try {
+    // Llama a la API (servicio)
+    await authService.logout();
+  } catch (error)
+  {
+    console.error("Error en API al cerrar sesión:", error);
+    // Continuamos de todos modos
+  } finally {
+    // Limpia el store de Pinia (la "mochila")
+    authStore.logout();
+    // Redirige al login
+    router.push('/login'); // O '/ingresar' si esa es tu ruta
+  }
 };
 </script>
 
+<!-- ============================================== -->
+
 <style scoped>
-/* ESTILOS DE LAYOUT MODERNO Y RESPONSIVO */
+/* 2. 🎨 Capa CSS (El Tema) */
+/* (Tus estilos de layout no cambian) */
 
 .nutriologo-layout {
   display: flex;
@@ -80,11 +101,11 @@ const handleLogout = async () => {
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  /* El color de fondo suave cambia con el tema */
   background-color: var(--color-background-soft);
   border-right: 1px solid var(--color-border);
-  position: sticky; /* Fija la barra lateral */
+  position: sticky;
   top: 0;
+  height: 100vh; /* Asegura que ocupe toda la altura */
 }
 
 .app-logo {
@@ -116,7 +137,6 @@ const handleLogout = async () => {
   background-color: var(--color-background-mute);
 }
 
-/* Estilo para la ruta activa (proporcionado por Vue Router) */
 .router-link-active, .router-link-exact-active {
   background-color: var(--nfip-c-green-health);
   color: var(--vt-c-white) !important;
@@ -127,6 +147,8 @@ const handleLogout = async () => {
   flex-grow: 1;
   padding: 2rem 3rem;
   overflow-y: auto; /* Permite el scroll del contenido */
+  background-color: var(--color-background); /* Fondo principal */
+  height: 100vh;
 }
 
 .content-header h1 {
@@ -147,6 +169,7 @@ const handleLogout = async () => {
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: var(--color-text);
+  word-break: break-word; /* Evita que nombres largos rompan el layout */
 }
 
 .logout-button {
@@ -164,19 +187,16 @@ const handleLogout = async () => {
   background-color: var(--nfip-c-orange-soft);
 }
 
-/* 📱 Responsividad: Ocultar o colapsar el sidebar en móviles */
+/* 📱 Responsividad */
 @media (max-width: 992px) {
-  /* En móviles, cambia a una navegación superior o de menú hamburguesa */
   .sidebar {
-    position: fixed; /* Ocultarlo o hacerlo un menú hamburguesa */
-    left: -250px; /* Ocultado por defecto */
-    transition: left 0.3s;
-    z-index: 1000;
-    /* Para simplificar, aquí solo lo ocultamos. En producción, usarías un botón de toggle. */
+    /* En producción, usarías un botón de toggle para 'left' */
+    left: -250px;
   }
   .content-area {
     margin-left: 0;
     width: 100%;
+    padding: 1.5rem;
   }
 }
 </style>

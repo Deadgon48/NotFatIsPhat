@@ -48,6 +48,31 @@ const router = createRouter({
                 // ... otras rutas del Nutriólogo
             ],
         },
+        {
+            path: '/paciente',
+            component: () => import('@/Layouts/PacienteLayoutView.vue'), // 1. El Layout
+            meta: { requiresAuth: true, role: 'Paciente' }, // 2. La Seguridad
+            children: [
+                // 3. Las Vistas Hijas
+                { path: '', redirect: 'dashboard' }, // Redirige /paciente a /paciente/dashboard
+                {
+                    path: 'dashboard',
+                    component: () => import('@/views/PacienteDashboardView.vue')
+                },
+                {
+                    path: 'mi-plan',
+                    component: () => import('@/views/MiPlanView.vue') // (Deberás crear esta vista)
+                },
+                {
+                    path: 'progreso',
+                    component: () => import('@/views/MiProgresoView.vue') // (Deberás crear esta vista)
+                }
+            ]
+        },
+
+
+
+
         { // <-- 2. AÑADIR LA NUEVA RUTA
             path: '/admin',
             name: 'AdminDashboard',
