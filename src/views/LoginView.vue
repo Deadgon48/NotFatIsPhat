@@ -38,7 +38,7 @@
 
         <div class="form-group">
           <label for="recovery-email">Email de Cuenta:</label>
-          <input type="email" id="recovery-email" v-model="recoveryEmail" required />
+          <input type="email" id="recovery-email" v-model="recoveryEmail" required placeholder="nombre@dominio.com" />
           <p v-if="recoveryError" class="error-message">{{ recoveryError }}</p>
           <p v-if="recoverySuccess" class="success-message">{{ recoverySuccess }}</p>
         </div>
@@ -136,6 +136,25 @@
 /* Botón de Enviar (CTA Principal) */
 .button-cta {
   flex-grow: 1; /* Permite que el botón ocupe espacio */
+  background-color: var(--nfip-c-green-health);
+  color: var(--vt-c-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  margin-bottom: 1rem;
+}
+
+.button-cta:hover {
+  background-color: var(--nfip-c-green-dark);
+}
+
+/* Botón de Borrar (Secundario) */
+.button-secondary {
+  flex-grow: 1;
   background-color: var(--nfip-c-orange-energy);
   color: var(--vt-c-white);
   border: none;
@@ -147,26 +166,8 @@
   transition: background-color 0.3s;
 }
 
-.button-cta:hover {
-  background-color: var(--nfip-c-orange-soft);
-}
-
-/* Botón de Borrar (Secundario) */
-.button-secondary {
-  flex-grow: 1;
-  background-color: var(--nfip-c-green-health);
-  color: var(--vt-c-white);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 30px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
 .button-secondary:hover {
-  background-color: var(--nfip-c-green-dark);
+  background-color: var(--nfip-c-orange-soft);
 }
 
 /* 📱 Responsividad */
@@ -186,10 +187,10 @@ import { ref, onMounted } from 'vue'; // Importamos ref y onMounted de Vue 3
 import { Login } from '@/models/Login';
 import { authService } from '@/services/AuthService';
 import { useRouter } from 'vue-router'; // Necesario para la navegación programática
-
+import { useAuthStore } from '@/stores/authStore';
 // 1. Hook para la navegación
 const router = useRouter();
-
+const authStore = useAuthStore();
 // 2. Estado Reactivo (Reemplazo de data())
 // Creamos una instancia reactiva del modelo LoginData
 const loginModel = ref(new Login());
@@ -228,9 +229,15 @@ const handleLogin = async () => {
     try {
       const response = await authService.login(loginModel.value);
       console.log('Login exitoso:', response);
+      authStore.login(response.user);
 
-      // Navegamos usando el router importado
-      router.push('/dashboard');
+      if (authStore.userRole === 'Nutriologo') {
+        router.push('/nutriologo/dashboard');
+      } else if (authStore.userRole === 'Paciente') {
+        router.push('/paciente/dashboard');
+      } else {
+        router.push('/');
+      }
 
     } catch (error) {
       apiError.value = error.message || 'Error al conectar con el servidor.';
