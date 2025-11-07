@@ -13,7 +13,7 @@
         <router-link to="/nutriologo/pacientes" class="nav-item">
           👥 Mis Pacientes
         </router-link>
-        <router-link to="/nutriologo/planes" class="nav-item">
+        <router-link to="/nutriologo/CreadorPlanes" class="nav-item">
           📝 Planes
         </router-link>
         <router-link to="/nutriologo/agenda" class="nav-item">
