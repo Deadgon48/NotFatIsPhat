@@ -9,6 +9,7 @@ import NutriologoView from "@/views/NutriologoView.vue";
 import MisPacientesView from "@/views/MisPacientesView.vue";
 import {useAuthStore} from "@/stores/authStore.js";
 import AdminDashboard from "@/views/AdminDashboard.vue"
+import CreadorPlanesView from "@/views/CreadorPlanesView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,8 @@ const router = createRouter({
                 { path: 'dashboard', component: NutriologoView },
                 { path: 'pacientes', component: MisPacientesView },
                 // ... otras rutas del Nutriólogo
+                { path: 'creadorplanes', component: CreadorPlanesView},
+
             ],
         },
         {

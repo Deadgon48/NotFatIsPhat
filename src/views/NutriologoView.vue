@@ -13,7 +13,7 @@
           <p>Agregar Pacientes, ver listado, historial, progreso y notas.</p>
         </router-link>
 
-        <router-link to="/nutriologo/planes" class="card soft-background">
+        <router-link to="/nutriologo/Creadorplanes" class="card soft-background">
           <h3>📝 Crear/Editar Planes</h3>
           <p>Diseñar, asignar y modificar dietas, objetivos calóricos y rutinas.</p>
         </router-link>
