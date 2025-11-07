@@ -33,13 +33,17 @@
           <p v-if="!catalogo.length && !error" class="loading-message">Cargando catálogo de alimentos...</p>
           <p v-if="error" class="error-message">{{ error }}</p>
 
+
           <div v-for="alimento in resultadosFiltrados" :key="alimento.id" class="alimento-card">
-            <span>{{ detalle.food_name }} ({{ detalle.food_kcal }} kcal / 100g)</span>
+            <span>{{ alimento.name }} ({{ alimento.kcal }} kcal / 100g)</span>
             <div class="accion-alimento">
               <input type="number" placeholder="g" min="1" step="1" v-model.number="porcionData[alimento.id]">
-              <button @click="agregarAlimento(alimento)" :disabled="!isReadyToAdd(alimento.id)">Agregar</button>
+              <button @click="agregarAlimento(alimento)" :disabled="!isReadyToAdd(alimento.id)">
+                Agregar
+              </button>
             </div>
           </div>
+
         </div>
       </div>
       <button @click="$emit('cerrar')" class="close-button">Cerrar</button>
