@@ -14,7 +14,7 @@
         <!-- Tarjetas de Navegación del Paciente -->
 
         <!-- CTA Primario (Naranja) para la acción clave -->
-        <router-link to="/paciente/mi-plan" class="card soft-background cta-primary">
+        <router-link to="/paciente/mis-planes" class="card soft-background cta-primary">
           <h3>🍎 Mi Plan de Comida</h3>
           <p>Ver el plan nutricional que te asignó tu nutriólogo.</p>
         </router-link>

@@ -30,7 +30,10 @@
           <h4>{{ dia }}</h4>
           <ul>
             <li v-for="(item, index) in plan.detalle.filter(d => d.dia === dia)" :key="index" class="alimento-item">
-              <strong>{{ item.comida }}:</strong> Alimento: {{ item.nombre }} Calorias: {{ item.kcal }}cal Porción: {{ item.porcion }}g
+              <strong>{{ item.comida }}:</strong> Alimento: {{ item.nombre }} -
+              Porción: {{ item.porcion }}g - Calorias: {{ item.kcal }}cal -
+              Proteina: {{ item.protein }}g prot - Grasas: {{ item.fat }}g grasa -
+              Carbohidratos: {{ item.carbs }}g carb - Fibra: {{ item.fiber}}g fibra
               <button class="delete-item" @click="eliminarDetalle(dia, index)">❌</button>
             </li>
             <li v-if="plan.detalle.filter(d => d.dia === dia).length === 0" style="font-size:0.85rem; color:#777;">
@@ -87,8 +90,12 @@ export default defineComponent({
         comida,
         alimento_id: alimento.id,
         porcion,
-        nombre: alimento.food_name,
-        kcal: alimento.food_kcal
+        nombre: alimento.name,
+        kcal: alimento.kcal,
+        protein: alimento.protein,
+        fat: alimento.fat,
+        carbs: alimento.carbs,
+        fiber: alimento.fiber
       });
       this.cerrarModal();
     },
@@ -147,7 +154,15 @@ export default defineComponent({
           nombre: d.food_name || "Alimento Desconocido",
 
           // ✅ Kcal real
-          kcal: d.food_kcal ?? 0
+          kcal: d.food_kcal ?? 0,
+
+          protein: d.food_protein ?? 0,
+
+          fat: d.food_fat ?? 0,
+
+          carbs: d.food_carbs ?? 0,
+
+          fiber: d.food_fiber ?? 0
         }))
       };
       alert(`Plan "${plantilla.nombre}" cargado. ¡Recuerda GUARDAR para actualizar!`);
