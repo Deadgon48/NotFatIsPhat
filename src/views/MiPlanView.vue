@@ -2,7 +2,7 @@
   <div class="mi-plan-view">
     <h1 class="page-heading">🍎 Mi Plan Nutricional</h1>
     <p class="page-subheading">
-      Este es tu plan asignado. Sigue las porciones y comidas para alcanzar tu objetivo.
+      Estos es tu plan asignado. Sigue las porciones y comidas para alcanzar tu objetivo.
     </p>
 
     <div v-if="isLoading" class="status-message">
@@ -21,6 +21,20 @@
           Por favor, espera a tu próxima consulta.
         </p>
       </div>
+
+      <div v-if="planes.length > 1" class="card-container soft-background" style="margin-bottom: 1rem;">
+        <label>Selecciona un plan:</label>
+        <select v-model="planSeleccionado" class="plan-selector">
+          <option
+              v-for="plan in planes"
+              :key="plan.plan_id"
+              :value="plan"
+          >
+            {{ plan.plan_name }}
+          </option>
+        </select>
+      </div>
+
 
       <div v-if="planData && planData.plan_name">
         <div class="tabs-container">
@@ -42,36 +56,30 @@
           </h2>
 
           <div class="meal-grid">
-            <div class="meal-card soft-background">
-              <h3>Desayuno</h3>
-              <ul v-if="groupedPlan[activeDay]?.Desayuno?.length">
-                <li v-for="item in groupedPlan[activeDay].Desayuno" :key="item.id">
-                  <span>{{ item.food_name }}</span>
-                  <span class="portion">{{ item.portion }}</span>
-                </li>
-              </ul>
-              <p v-else class="no-meal">Sin items</p>
-            </div>
+            <div
+                class="meal-card soft-background"
+                v-for="(mealItems, mealName) in groupedPlan[activeDay]"
+                :key="mealName"
+            >
+              <h3>{{ mealName }}</h3>
 
-            <div class="meal-card soft-background">
-              <h3>Comida</h3>
-              <ul v-if="groupedPlan[activeDay]?.Comida?.length">
-                <li v-for="item in groupedPlan[activeDay].Comida" :key="item.id">
-                  <span>{{ item.food_name }}</span>
-                  <span class="portion">{{ item.portion }}</span>
-                </li>
-              </ul>
-              <p v-else class="no-meal">Sin items</p>
-            </div>
+              <ul v-if="mealItems.length">
+                <li v-for="item in mealItems" :key="item.id">
+                  <span class="portion">Alimento: {{ item.food_name }}</span>
+                  <span class="portion"> Porcion: {{ item.porcion }}g</span>
+                  <span class="portion"> Calorías: {{ item.food_kcal }} cal</span>
+                  <span class="portion"> Proteína: {{ item.food_protein }}g prot</span>
+                  <span class="portion"> Grasas: {{ item.food_fat }}g grasa</span>
+                  <span class="portion"> Carbohidratos: {{ item.food_carbs }}g carb</span>
+                  <span class="portion"> Fibra: {{ item.food_fiber }}g fibra</span>
 
-            <div class="meal-card soft-background">
-              <h3>Cena</h3>
-              <ul v-if="groupedPlan[activeDay]?.Cena?.length">
-                <li v-for="item in groupedPlan[activeDay].Cena" :key="item.id">
-                  <span>{{ item.food_name }}</span>
-                  <span class="portion">{{ item.portion }}</span>
+                    <button @click="verDetalle(item)">
+                      Ver detalle
+                    </button>
+
                 </li>
               </ul>
+
               <p v-else class="no-meal">Sin items</p>
             </div>
           </div>
@@ -83,60 +91,142 @@
 
 <script setup>
 // 3. 🧠 Capa JavaScript (El ViewModel)
-import { ref, onMounted, computed } from 'vue';
+import {ref, onMounted, computed, watch} from 'vue';
 // Asumimos un nuevo servicio para los planes
 import { planService } from '@/services/PlanService';
 
+import {useRoute, useRouter} from 'vue-router';
+
+const route = useRoute()
+const router = useRouter();
+
+
+
 // --- Reactividad (Estado) ---
-const planData = ref(null); // El "Modelo" que viene de la API
 const isLoading = ref(true);
 const apiError = ref(null);
 const activeDay = ref(1); // Para las pestañas (1 = Lunes)
 
+const planes = ref([]);
+const planSeleccionado = ref(null);
+
+
+
+
 // --- Arquitectura MVVM: Carga de datos del Modelo ---
 const fetchMiPlan = async () => {
   try {
-    // 1. Delega la Comunicación con la API al Servicio
-    // (Debes crear este servicio y la ruta en la API)
-    const data = await planService.getMiPlan();
-    planData.value = data;
+    const data = await planService.getMisPlanes(); // Nueva ruta
+    planes.value = data;
+
+    if (planes.value.length === 1) {
+      planSeleccionado.value = planes.value[0];
+    }
   } catch (error) {
-    if (error.message !== 'UNAUTHORIZED') { // No mostrar error si solo es "no logueado"
-      apiError.value = error.message || 'No se pudo cargar tu plan.';
+    if (error.message !== 'UNAUTHORIZED') {
+      apiError.value = error.message || 'No se pudo cargar tus planes.';
     }
   } finally {
     isLoading.value = false;
   }
 };
 
-// --- Hooks de Ciclo de Vida ---
-onMounted(fetchMiPlan);
+// Ahora `planData` depende de la selección
+const planData = computed(() => planSeleccionado.value);
 
+
+// --- Hooks de Ciclo de Vida ---
+onMounted(async () => {
+  await fetchMiPlan();
+  console.log("➡️ planData:", JSON.parse(JSON.stringify(planData.value)));
+
+  // ✅ Si la URL trae /mis-planes/:idPlan
+  const idPlanFromRoute = route.params.idPlan;
+
+  if (idPlanFromRoute) {
+    const match = planes.value.find(p => p.plan_id == idPlanFromRoute);
+    if (match) {
+      planSeleccionado.value = match;
+    }
+  }
+});
 // --- Lógica del ViewModel (Propiedades Calculadas) ---
 // Transforma la lista plana de items en un objeto agrupado
 // para que la Vista (<template>) sea simple.
+
+const dayToNumber = {
+  "Lunes": 1,
+  "Martes": 2,
+  "Miércoles": 3,
+  "Jueves": 4,
+  "Viernes": 5,
+  "Sábado": 6,
+  "Domingo": 7
+};
+
+
 const groupedPlan = computed(() => {
-  if (!planData.value || !planData.value.details) {
-    return {};
-  }
+  if (!planData.value || !planData.value.details) return {};
 
-  // Agrupa por día y luego por tipo de comida
-  // Resultado: { 1: { Desayuno: [...], Comida: [...] }, 2: { ... } }
-  return planData.value.details.reduce((acc, item) => {
-    // Estructura del acumulador
-    if (!acc[item.dia_numero]) acc[item.dia_numero] = {};
-    if (!acc[item.dia_numero][item.meal]) acc[item.dia_numero][item.meal] = [];
+  const dias = planData.value.details.reduce((acc, item) => {
+    const dayNum = dayToNumber[item.dia_numero] || 1;
+    if (!acc[dayNum]) acc[dayNum] = {};
 
-    acc[item.dia_numero][item.meal].push(item);
+    if (!acc[dayNum][item.comida]) acc[dayNum][item.comida] = [];
+    acc[dayNum][item.comida].push(item);
+
     return acc;
   }, {});
+
+  // ✅ Ordenar comidas por número (Comida 1, Comida 2, ...)
+  for (const day in dias) {
+    dias[day] = Object.fromEntries(
+        Object.entries(dias[day]).sort((a, b) => {
+          const numA = parseInt(a[0].split(" ")[1]);
+          const numB = parseInt(b[0].split(" ")[1]);
+          return numA - numB;
+        })
+    );
+  }
+
+  return dias;
 });
+
+watch(planSeleccionado, (newVal) => {
+  if (newVal) {
+    router.replace({
+      name: "MiPlan",
+      params: { idPlan: newVal.plan_id }
+    });
+  }
+});
+
+
 
 // --- Lógica del ViewModel (Helpers) ---
 const getDayName = (dayNumber) => {
   const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   return days[dayNumber - 1] || 'Día';
 };
+
+
+function verDetalle(item) {
+  if (!planSeleccionado.value) return;
+
+  router.push({
+    name: "DetalleAlimento",
+    params: {
+      idPlan: planSeleccionado.value.plan_id,
+      idAlimento: item.alimento_id
+    }
+  });
+
+  console.log("➡️ planSeleccionado.value:", planSeleccionado.value);
+
+}
+
+
+
 </script>
 
 <style scoped>
@@ -227,8 +317,8 @@ const getDayName = (dayNumber) => {
 
 /* Grilla de Comidas */
 .meal-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column; /* ✅ De arriba hacia abajo */
   gap: 1.5rem;
 }
 .meal-card {
@@ -238,7 +328,7 @@ const getDayName = (dayNumber) => {
   border: 1px solid var(--color-border);
 }
 .meal-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--nfip-c-orange-energy); /* Naranja (Tema) */
   margin-top: 0;
@@ -252,8 +342,8 @@ const getDayName = (dayNumber) => {
 .meal-card li {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  font-size: 1rem;
   color: var(--color-text);
 }
 .meal-card .portion {

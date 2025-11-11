@@ -78,7 +78,7 @@ const handleLogout = async () => {
     // Limpia el store de Pinia (la "mochila")
     authStore.logout();
     // Redirige al login
-    router.push('/login'); // O '/ingresar' si esa es tu ruta
+    router.push('/ingresar'); // O '/ingresar' si esa es tu ruta
   }
 };
 </script>

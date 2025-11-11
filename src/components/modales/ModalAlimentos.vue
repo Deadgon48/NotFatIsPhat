@@ -35,7 +35,17 @@
 
 
           <div v-for="alimento in resultadosFiltrados" :key="alimento.id" class="alimento-card">
-            <span>{{ alimento.name }} ({{ alimento.kcal }} kcal / 100g)</span>
+            <span class="alimento-info">
+              <strong>{{ alimento.name }}</strong><br>
+              {{ alimento.kcal }} kcal ·
+              {{ alimento.protein }}g prot ·
+              {{ alimento.fat }}g grasa ·
+              {{ alimento.carbs }}g carb ·
+              {{ alimento.fiber }}g fibra
+            </span>
+
+              <div class="semaforo" :class="getSemaforo(alimento)"></div>
+
             <div class="accion-alimento">
               <input type="number" placeholder="g" min="1" step="1" v-model.number="porcionData[alimento.id]">
               <button @click="agregarAlimento(alimento)" :disabled="!isReadyToAdd(alimento.id)">
@@ -110,6 +120,12 @@ export default {
       this.diaSeleccionado = '';
       this.comidaSeleccionada = '';
       this.porcionData[alimento.id] = null;
+    },
+
+    getSemaforo(alimento) {
+      if (alimento.kcal > 300 || alimento.fat > 13) return "rojo";
+      if (alimento.kcal > 120 || alimento.fat > 5) return "amarillo";
+      return "verde";
     }
   }
 };
@@ -241,6 +257,27 @@ input::placeholder {
 .close-button:hover {
   background-color: var(--nfip-c-orange-soft);
 }
+
+.semaforo {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-left: 6px;
+}
+
+/* Colores del semáforo */
+.semaforo.verde {
+  background-color: #3BB54A;
+}
+
+.semaforo.amarillo {
+  background-color: #FFC107;
+}
+
+.semaforo.rojo {
+  background-color: #E53935;
+}
+
 
 /* 📱 Responsividad - Mantener tus media queries existentes */
 @media (max-width: 600px) {

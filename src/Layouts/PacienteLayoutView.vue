@@ -14,7 +14,7 @@
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/paciente/mi-plan" class="nav-link">
+          <RouterLink to="/paciente/mis-planes" class="nav-link">
             <span>🍎</span> Mi Plan
           </RouterLink>
         </li>
@@ -67,7 +67,7 @@ const handleLogout = async () => {
     console.error("Error en API al cerrar sesión:", error);
   } finally {
     authStore.logout(); // Limpia el store de Pinia
-    router.push('/login');
+    router.push('/ingresar');
   }
 };
 </script>

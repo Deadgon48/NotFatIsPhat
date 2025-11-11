@@ -11,6 +11,7 @@ import {useAuthStore} from "@/stores/authStore.js";
 import AdminDashboard from "@/views/AdminDashboard.vue"
 import CreadorPlanesView from "@/views/CreadorPlanesView.vue";
 
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -53,27 +54,45 @@ const router = createRouter({
         },
         {
             path: '/paciente',
-            component: () => import('@/Layouts/PacienteLayoutView.vue'), // 1. El Layout
-            meta: { requiresAuth: true, role: 'Paciente' }, // 2. La Seguridad
+            component: () => import('@/Layouts/PacienteLayoutView.vue'),
+            meta: { requiresAuth: true, role: 'Paciente' },
             children: [
-                // 3. Las Vistas Hijas
-                { path: '', redirect: 'dashboard' }, // Redirige /paciente a /paciente/dashboard
+                { path: '', redirect: 'dashboard' },
+
                 {
                     path: 'dashboard',
                     component: () => import('@/views/PacienteDashboardView.vue')
                 },
+
+                // Lista de planes del paciente
                 {
-                    path: 'mi-plan',
-                    component: () => import('@/views/MiPlanView.vue') // (Deberás crear esta vista)
+                    path: 'mis-planes',
+                    name: 'misplanes',
+                    component: () => import('@/views/MiPlanView.vue')
                 },
+
+                // Ver un plan específico
+                {
+                    path: 'mis-planes/:idPlan',
+                    name: 'MiPlan',
+                    component: () => import('@/views/MiPlanView.vue'),
+                    props: true
+                },
+
+                // Ver alimento dentro del plan
+                {
+                    path: 'mis-planes/:idPlan/alimento/:idAlimento',
+                    name: 'DetalleAlimento',
+                    component: () => import('@/views/DetalleAlimento.vue'),
+                    props: true
+                },
+
                 {
                     path: 'progreso',
-                    component: () => import('@/views/MiProgresoView.vue') // (Deberás crear esta vista)
+                    component: () => import('@/views/MiProgresoView.vue')
                 }
             ]
         },
-
-
 
 
         { // <-- 2. AÑADIR LA NUEVA RUTA

@@ -83,7 +83,15 @@ class PlanService {
                 food_name: d.food_name || mapaAlimentos.get(d.alimento_id)?.name || "Alimento Desconocido",
 
                 // ✅ Kcal del alimento
-                food_kcal: d.food_kcal ?? (mapaAlimentos.get(d.alimento_id)?.kcal ?? 0)
+                food_kcal: d.food_kcal ?? (mapaAlimentos.get(d.alimento_id)?.kcal ?? 0),
+
+                food_protein: d.food_protein ?? (mapaAlimentos.get(d.alimento_id)?.protein ?? 0),
+
+                food_fat: d.food_fat ?? (mapaAlimentos.get(d.alimento_id)?.fat ?? 0),
+
+                food_carbs: d.food_carbs ?? (mapaAlimentos.get(d.alimento_id)?.carbs ?? 0),
+
+                food_fiber: d.food_fiber ?? (mapaAlimentos.get(d.alimento_id)?.fiber ?? 0)
             }))
 
     }));
@@ -102,6 +110,38 @@ class PlanService {
         if (!resp.ok) throw new Error(data.message || 'Error al asignar plan');
         return data;
     }
+
+    async getMisPlanes() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/planes/mis-planes`, {
+                method: "GET",
+                credentials: "include", // ✅ Enviar cookies con la sesión
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!res.ok) throw new Error("Error obteniendo planes");
+
+            const data = await res.json(); // ✅ fetch usa json(), no res.data
+            return data;
+
+        } catch (error) {
+            console.error("Error al obtener planes:", error);
+            throw error;
+        }
+    }
+
+
+    async getAlimento(id) {
+        const res = await fetch(`${API_BASE_URL}/planes/alimento/${id}`, {
+            credentials: 'include', // envía cookie de sesión
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+        return res.json();
+    }
+
 }
 
 export const planService = new PlanService();
