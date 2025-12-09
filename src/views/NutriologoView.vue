@@ -18,19 +18,7 @@
           <p>Diseñar, asignar y modificar dietas, objetivos calóricos y rutinas.</p>
         </router-link>
 
-
-
-        <router-link to="/nutriologo/recetas" class="card soft-background">
-          <h3>📚 Biblioteca de Recetas</h3>
-          <p>Gestionar y agregar nuevas recetas, ingredientes y recursos educativos.</p>
-        </router-link>
-
-        <router-link to="/nutriologo/mensajeria" class="card soft-background">
-          <h3>📧 Mensajería</h3>
-          <p>Comunicación directa con los pacientes para resolver dudas rápidas.</p>
-        </router-link>
-
-        <router-link to="/perfil/ajustes" class="card soft-background">
+        <router-link to="/nutriologo/AjustesPerfil" class="card soft-background">
           <h3>⚙️ Ajustes de Perfil</h3>
           <p>Actualizar datos personales, tarifas y horario de disponibilidad.</p>
         </router-link>

@@ -10,6 +10,7 @@ import MisPacientesView from "@/views/MisPacientesView.vue";
 import {useAuthStore} from "@/stores/authStore.js";
 import AdminDashboard from "@/views/AdminDashboard.vue"
 import CreadorPlanesView from "@/views/CreadorPlanesView.vue";
+import AjustesPerfilView from "@/views/AjustesPerfilView.vue";
 
 
 const router = createRouter({
@@ -47,6 +48,7 @@ const router = createRouter({
             children: [
                 { path: 'dashboard', component: NutriologoView },
                 { path: 'pacientes', component: MisPacientesView },
+                { path: 'AjustesPerfil', component: AjustesPerfilView },
                 // ... otras rutas del Nutriólogo
                 { path: 'creadorplanes', component: CreadorPlanesView},
 
