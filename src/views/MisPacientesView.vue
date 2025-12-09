@@ -59,6 +59,10 @@
               <button @click="viewPatientDetails(p.id)" class="action-link green-text">
                 Ver Ficha
               </button>
+              |
+              <button @click="openNotificar(p.id)" class="action-link">
+                Notificar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -67,6 +71,14 @@
 
     <!-- Modal para asignar paciente existente -->
     <AsignarPacienteModal v-model:show="showAsignar" @assigned="onAssigned" />
+
+    <!-- Modal para enviar notificación al paciente -->
+    <ModalNotificacion
+      v-if="showNotificar"
+      :patient-id="selectedPatientId"
+      @cerrar="showNotificar = false"
+      @enviado="onMensajeEnviado"
+    />
   </div>
 </template>
 
@@ -75,15 +87,18 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import pacienteService from '@/services/PacienteService';
 import AsignarPacienteModal from '@/components/AsignarPacienteModal.vue';
+import ModalNotificacion from '@/components/ModalNotificacion.vue';
 
 const router = useRouter();
 
 // Estado
-const patients     = ref([]);   // lista de mis pacientes
-const searchTerm   = ref('');
-const isLoading    = ref(false);
-const loadError    = ref(null);
-const showAsignar  = ref(false);
+const patients           = ref([]);   // lista de mis pacientes
+const searchTerm         = ref('');
+const isLoading          = ref(false);
+const loadError          = ref(null);
+const showAsignar        = ref(false);
+const showNotificar      = ref(false);      // modal de notificación
+const selectedPatientId  = ref(null);       // paciente al que se notificará
 
 // Carga inicial
 async function fetchPatients() {
@@ -132,6 +147,17 @@ function formatDate(dateString) {
   const d = new Date(dateString);
   if (isNaN(d)) return 'N/A';
   return d.toLocaleDateString();
+}
+
+// Abrir modal de notificación
+function openNotificar(patientId) {
+  selectedPatientId.value = patientId;
+  showNotificar.value = true;
+}
+
+function onMensajeEnviado() {
+  // Aquí podrías usar un toast; por ahora algo sencillo
+  alert('Mensaje enviado correctamente');
 }
 
 // Evento tras asignar desde el modal

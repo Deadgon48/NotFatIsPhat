@@ -1,18 +1,12 @@
 <template>
   <!-- 1. 🖼️ Capa HTML (La Vista) -->
-  <!-- (Adaptada al estilo de 'dashboard-view') -->
   <div class="dashboard-view">
     <h2 class="page-heading">
-      <!-- (Conectado a Pinia) -->
       <span class="green-text">¡Bienvenido de nuevo, {{ userName }}!</span>
     </h2>
 
     <div id="dashboard-container">
-      <!-- (Tu patrón de 'card-menu') -->
       <div class="card-menu">
-
-        <!-- Tarjetas de Navegación del Paciente -->
-
         <!-- CTA Primario (Naranja) para la acción clave -->
         <router-link to="/paciente/mis-planes" class="card soft-background cta-primary">
           <h3>🍎 Mi Plan de Comida</h3>
@@ -24,20 +18,16 @@
           <p>Registrar tu peso y notas para que tu nutriólogo vea tu avance.</p>
         </router-link>
 
-        <router-link to="/paciente/mensajeria" class="card soft-background">
-          <h3>📧 Mensajería</h3>
-          <p>Comunicación directa con tu nutriólogo para dudas rápidas.</p>
-        </router-link>
-
         <router-link to="/perfil/ajustes" class="card soft-background">
           <h3>⚙️ Ajustes de Perfil</h3>
           <p>Actualizar tus datos personales y contraseña.</p>
         </router-link>
-
       </div>
+
+      <!-- 🟡 Sección GP-17: Mis notificaciones (solo lectura) -->
+      <NotificacionesPaciente />
     </div>
 
-    <!-- (Área de Logout, idéntica) -->
     <div id="logout-area">
       <button @click="handleLogout" class="logout-button accent-orange">
         Cerrar Sesión
@@ -46,28 +36,18 @@
   </div>
 </template>
 
-<!-- ============================================== -->
-
 <script setup>
-// 3. 🧠 Capa JavaScript (El ViewModel)
-// (Script limpiado y adaptado)
-import { computed } from 'vue'; // Se importa 'computed'
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore'; // Se importa Pinia
-import { authService } from '@/services/AuthService'; // Se importa AuthService
+import { useAuthStore } from '@/stores/authStore';
+import { authService } from '@/services/AuthService';
+import NotificacionesPaciente from '@/components/NotificacionesPaciente.vue';
 
 const router = useRouter();
-const authStore = useAuthStore(); // Se obtiene el store
+const authStore = useAuthStore();
 
-// --- Reactividad (Estado) ---
-// (El 'userName' se lee de Pinia, igual que en el dashboard del Nutriólogo)
 const userName = computed(() => authStore.user?.name || 'Paciente');
 
-// (Se elimina toda la lógica de 'pacienteService', 'isLoading', 'bmi', etc.
-//  ya que este es un menú de navegación, no una vista de estadísticas.)
-
-// --- Métodos de Acción ---
-// (Lógica de Logout completa y correcta)
 const handleLogout = async () => {
   try {
     await authService.logout();
@@ -80,11 +60,7 @@ const handleLogout = async () => {
 };
 </script>
 
-<!-- ============================================== -->
-
 <style scoped>
-/* 2. 🎨 Capa CSS (El Tema) */
-/* (Estilos copiados de NutriologoView.vue para consistencia visual) */
 .dashboard-view {
   max-width: 1200px;
   margin: 0 auto;
@@ -99,12 +75,15 @@ const handleLogout = async () => {
 .green-text {
   color: var(--nfip-c-green-health);
 }
+
+/* Grid de tarjetas del menú principal */
 .card-menu {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
   margin-bottom: 3rem;
 }
+
 .card {
   text-decoration: none;
   border-radius: 12px;
@@ -141,6 +120,7 @@ const handleLogout = async () => {
 .cta-primary h3 {
   color: var(--nfip-c-orange-energy);
 }
+
 #logout-area {
   text-align: center;
 }
@@ -159,7 +139,7 @@ const handleLogout = async () => {
   color: var(--vt-c-white);
 }
 
-/* (Responsividad) */
+/* Responsividad */
 @media (max-width: 900px) {
   .page-heading {
     font-size: 2rem;
