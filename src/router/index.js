@@ -1,4 +1,6 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+
 import HomeView from '../views/HomeView.vue'
 import RegistroView from '../views/RegistroView.vue'
 import LoginView from "@/views/LoginView.vue";
@@ -12,34 +14,82 @@ import AdminDashboard from "@/views/AdminDashboard.vue"
 import CreadorPlanesView from "@/views/CreadorPlanesView.vue";
 import AjustesPerfilView from "@/views/AjustesPerfilView.vue";
 
+import { useAuthStore } from '@/stores/authStore.js'
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView
+    },
+    {
+      path: '/registro',
+      name: 'registro',
+      component: RegistroView
+    },
+    // Ruta “oficial” de login
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    // Compatibilidad con la ruta vieja /ingresar
+    {
+      path: '/ingresar',
+      redirect: '/login'
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: ResetPasswordView
+    },
+    {
+      path: '/acceso-denegado',
+      name: 'AccesoDenegado',
+      component: AccesoDenegadoView
+    },
+
+    // RUTAS NUTRIÓLOGO (PROTEGIDAS)
+    {
+      path: '/nutriologo',
+      component: NutriologoLayoutView, // layout principal
+      meta: { requiresAuth: true, role: 'Nutriologo' },
+      children: [
+        { path: 'dashboard', component: NutriologoView },
+        { path: 'pacientes', component: MisPacientesView },
+        { path: 'creadorplanes', component: CreadorPlanesView }
+      ]
+    },
+
+    // RUTAS PACIENTE (PROTEGIDAS)
+    {
+      path: '/paciente',
+      component: () => import('@/Layouts/PacienteLayoutView.vue'),
+      meta: { requiresAuth: true, role: 'Paciente' },
+      children: [
+        { path: '', redirect: 'dashboard' },
         {
-            path: '/',
-            name: 'home',
-            component: HomeView
+          path: 'dashboard',
+          component: () => import('@/views/PacienteDashboardView.vue')
         },
         {
-            path: '/registro',
-            name: 'registro',
-            component: RegistroView
+          path: 'mis-planes',
+          name: 'misplanes',
+          component: () => import('@/views/MiPlanView.vue')
         },
         {
-            path: '/ingresar',
-            name: 'ingresar',
-            component: LoginView
+          path: 'mis-planes/:idPlan',
+          name: 'MiPlan',
+          component: () => import('@/views/MiPlanView.vue'),
+          props: true
         },
         {
-            path: '/reset-password',
-            name: 'ResetPassword',
-            component: ResetPasswordView
-        },
-        {
-            path: '/acceso-denegado',
-            name: 'AccesoDenegado',
-            component: AccesoDenegadoView
+          path: 'mis-planes/:idPlan/alimento/:idAlimento',
+          name: 'DetalleAlimento',
+          component: () => import('@/views/DetalleAlimento.vue'),
+          props: true
         },
         {
             path: '/nutriologo',
@@ -107,33 +157,42 @@ const router = createRouter({
 
         // Rutas del Paciente (Protegidas)
 
-    ]
+    // (Podrías añadir una ruta 404 catch-all si lo ves necesario)
+  ]
 })
 
-
 router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
 
-    // Importante: El store debe instanciarse DENTRO del guardia
-    const authStore = useAuthStore();
+  const requiresAuth = to.meta.requiresAuth
+  const requiredRole = to.meta.role
+  const isLoggedIn = authStore.isLoggedIn
+  const userRole = authStore.userRole
 
-    const requiresAuth = to.meta.requiresAuth;
-    const requiredRole = to.meta.role;
-
-    // 3. REGLA 1: ¿Ruta protegida y el usuario NO está logueado?
-    if (requiresAuth && !authStore.isLoggedIn) {
-        next({ path: '/ingresar' }); // Mándalo al login
-        return;
+  // Si ya está logueado e intenta ir al login, mándalo a su dashboard
+  if (isLoggedIn && (to.path === '/login' || to.path === '/ingresar')) {
+    if (userRole === 'Nutriologo') {
+      return next('/nutriologo/dashboard')
     }
-
-    // 4. REGLA 2: ¿Ruta protegida, usuario logueado, PERO el rol no coincide?
-    if (requiresAuth && requiredRole && authStore.userRole !== requiredRole) {
-        next({ path: '/acceso-denegado' }); // Mándalo a "No autorizado"
-        return;
+    if (userRole === 'Paciente') {
+      return next('/paciente/dashboard')
     }
+    // fallback
+    return next('/')
+  }
 
-    next();
-});
+  // REGLA 1: ruta protegida y NO logueado → al login
+  if (requiresAuth && !isLoggedIn) {
+    return next('/login')
+  }
 
+  // REGLA 2: ruta protegida, logueado, pero rol incorrecto → acceso denegado
+  if (requiresAuth && requiredRole && userRole !== requiredRole) {
+    return next('/acceso-denegado')
+  }
+
+  // todo ok
+  next()
+})
 
 export default router
-

@@ -1,12 +1,12 @@
 <template>
   <div class="home-view-landing">
 
-    <h1 class="page-heading">👋 ¡Bienvenido a NoFatIsPhat!</h1>
+    <h1 class="page-heading">¡Bienvenido a NoFatIsPhat!</h1>
 
     <div class="card-menu-auth">
 
       <div class="auth-card soft-background">
-        <h3>👥 Regístrate Hoy</h3>
+        <h3>Regístrate Hoy</h3>
         <p class="p-reg-log">
           Comienza tu camino hacia una vida más saludable. Ingresa tus datos para crear una cuenta.
         </p>
@@ -16,7 +16,7 @@
       </div>
 
       <div class="auth-card mute-background">
-        <h3>📝 ¿Ya tienes una cuenta?</h3>
+        <h3>¿Ya tienes una cuenta?</h3>
         <p class="p-reg-log">
           Inicia sesión con tu correo electrónico y contraseña para acceder a tu panel de control.
         </p>
@@ -32,12 +32,16 @@
       <p>Tu plataforma inteligente para el seguimiento nutricional y el logro de metas de fitness. ¡La salud es el verdadero lujo!</p>
     </div>
 
+
+    <div class="motivation-section">
+      <h1 class="page-heading">¡Conócenos!</h1>
+
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/oPaM8_1_LTU?si=wfbDVe-0zh9_rdA1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* Las variables se acceden a través de la herencia del :root y el CSS de tu app */
-
 .home-view-landing {
   max-width: 800px;
   margin: 2rem auto;
@@ -119,6 +123,7 @@
   border-radius: 12px;
   background-color: var(--color-background-mute);
   color: var(--color-text);
+  margin-bottom: 3rem;
 }
 
 @media (max-width: 600px) {
@@ -141,3 +146,5 @@
 }
 
 </style>
+<script setup lang="ts">
+</script>

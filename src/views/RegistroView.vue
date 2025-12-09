@@ -51,7 +51,7 @@
                   </div>
                   <div class="form-group">
                     <label for="telefono">Teléfono de Contacto:</label>
-                    <input type="tel" id="telefono" v-model="userModel.telefono" required placeholder="Ej: (+99)1112223344"/>
+                    <input type="tel" id="telefono" v-model="userModel.telefono" required placeholder="Ej: +991112223344"/>
                     <p v-if="userModel.errors.telefono" class="error-message">{{ userModel.errors.telefono }}</p>
                   </div>
                 </div>
