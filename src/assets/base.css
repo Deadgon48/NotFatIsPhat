@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Momo+Trust+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Momo+Trust+Display&display=swap');
+
+
+
 :root {
 
     --vt-c-white: #ffffff;
@@ -68,6 +73,28 @@
     font-weight: normal;
 }
 
+/* Las variables se acceden a través de la herencia del :root y el CSS de tu app */
+
+
+h4,h5,h6 {
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+}
+
+h1,h2,h3 {
+    font-family: "Changa One", sans-serif;
+    font-weight: 50;
+    font-style: normal;
+}
+div,p,input,button,select {
+            font-family: "Exo 2", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+
 body {
     min-height: 100vh;
     color: var(--color-text);
@@ -103,9 +130,9 @@ body {
 }
 
 a,
-.green {
+.link {
     text-decoration: none;
-    color: var(--nfip-c-green-health);
+    color: var(--color-text);
     transition: 0.4s;
     padding: 3px;
 }
