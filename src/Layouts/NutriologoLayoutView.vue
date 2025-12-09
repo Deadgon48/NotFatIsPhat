@@ -16,13 +16,8 @@
         <router-link to="/nutriologo/CreadorPlanes" class="nav-item">
           📝 Planes
         </router-link>
-        <router-link to="/nutriologo/agenda" class="nav-item">
-          📅 Agenda
-        </router-link>
-        <router-link to="/nutriologo/recetas" class="nav-item">
-          📚 Recetas
-        </router-link>
-        <router-link to="/nutriologo/ajustes" class="nav-item">
+
+        <router-link to="/nutriologo/AjustesPerfilView" class="nav-item">
           ⚙️ Ajustes
         </router-link>
       </nav>
