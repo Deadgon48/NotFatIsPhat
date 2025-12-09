@@ -52,10 +52,11 @@ const handleLogout = async () => {
   try {
     await authService.logout();
   } catch (error) {
-    console.error("Error en API al cerrar sesión:", error);
+    console.error('Error en API al cerrar sesión:', error);
   } finally {
     authStore.logout();
-    router.push('/login');
+    // usamos replace para que no quede la página anterior en el historial
+    await router.replace('/login');
   }
 };
 </script>
