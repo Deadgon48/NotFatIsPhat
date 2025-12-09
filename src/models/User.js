@@ -58,7 +58,7 @@ export class User {
                 valid = false;
             }
 
-            const telefonoContRegex = /^\(\+\d{2}\) ?\d{10}$/;
+            const telefonoContRegex = /^\+?[1-9][0-9]{7,14}$/;
             if (!this.telefono || !telefonoContRegex.test(this.telefono)) {
                 this.errors.telefono = 'El formato de teléfono no es válido. Ej: (+52) 1234567890';
                 valid = false;
