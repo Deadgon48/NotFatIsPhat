@@ -36,3 +36,5 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 ### Guía de Despliegue
 
 <https://deadgon48.github.io/NoFatIsPhat-frontend/despliege>
+
+## Estado del Proyecto: Desplegado
