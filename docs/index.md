@@ -27,6 +27,8 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ```
 
+![Diagrama de Contexto C4](diagrama actualizado.png)
+
 ## Secciones
 
 ### Diccionario de datos
