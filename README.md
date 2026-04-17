@@ -39,3 +39,25 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Declaración de Ética y Gobernanza
+
+Este repositorio se rige por el principio
+de "Privacidad por Diseño".
+
+##### Privacidad de Datos: 
+El código implementa cifrado de hash a contraseñas
+para mejorar la seguridad de los datos y cuentas
+de los pacientes.
+
+#### Proteccion: 
+Solo los nutriologos y los pacientes
+pueden acceder a sus perfiles para eso se
+implementa el principio de priviliegio minimo.
+
+
+#### Sostenibilidad y Accesibilidad: 
+El software está optimizado
+para un bajo consumo de datos, permitiendo su uso en
+zonas con conectividad limitada, promoviendo la equidad en
+el acceso a la salud digital.

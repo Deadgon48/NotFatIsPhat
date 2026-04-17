@@ -1,0 +1,53 @@
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Para cumplir con los estándares de 2026
+
+
+name: CI de Verificación de Documentación Técnica
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-docs:
+    name: Verificación de Integridad
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código actual del repositorio
+      - name: Checkout de repositorio
+        uses: actions/checkout@v4
+
+      # 2. Validación de Formato Markdown
+      - name: Markdown Linting
+        uses: davidanson/markdownlint-cli2-action@v16
+        with:
+          globs: "**/*.md"
+
+      # 3. Verificación de Imágenes y Enlaces
+      # Este paso asegura que los archivos .png referenciados en index.md
+      # existan físicamente en la ruta indicada.
+      - name: Verificar existencia de imágenes
+        run: |
+          if [ -f "docs/diagrama actualizado.png" ] || [ -f "./diagrama actualizado.png" ]; then
+            echo "Imagen de arquitectura encontrada."
+          else
+            echo "Error: No se encuentra el archivo 'diagrama actualizado.png'"
+            exit 1
+          fi
+
+      # 4. Verificación de Enlaces (Broken Link Checker)
+      - name: Check for broken links
+        uses: lycheeverse/lychee-action@v1.9.0
+        with:
+          args: "--verbose --no-progress '**/*.md'"
+
+      # 5: Despliegue (Solo si los pasos anteriores pasan y es la rama main)
+      - name: Deploy a GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs # O la carpeta donde esté tu sitio
