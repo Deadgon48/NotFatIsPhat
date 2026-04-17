@@ -2,6 +2,8 @@
 
 Bienvenido a la documentación técnica del Sistema NoFatIsPhat.
 
+![Diagrama de Contexto C4](diagrama actualizado.png)
+
 ## Vista de Contexto (C4 Nivel 1)
 
 ```mermaid
@@ -27,7 +29,7 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ```
 
-![Diagrama de Contexto C4](diagrama actualizado.png)
+
 
 ## Secciones
 
