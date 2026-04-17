@@ -31,10 +31,10 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ### Diccionario de datos
 
-<https://deadgon48.github.io/NoFatIsPhat-frontend/datos>
+<https://deadgon48.github.io/NoFatIsPhat/datos>
 
 ### Guía de Despliegue
 
-<https://deadgon48.github.io/NoFatIsPhat-frontend/despliege>
+<https://deadgon48.github.io/NoFatIsPhat/despliege>
 
 ## Estado del Proyecto: Desplegado
