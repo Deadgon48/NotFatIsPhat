@@ -40,3 +40,8 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 <https://deadgon48.github.io/NoFatIsPhat/despliege>
 
 ## Estado del Proyecto: Desplegado
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
