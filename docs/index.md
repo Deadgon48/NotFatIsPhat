@@ -29,8 +29,6 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ```
 
-
-
 ## Secciones
 
 ### Diccionario de datos
