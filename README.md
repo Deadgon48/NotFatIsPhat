@@ -61,3 +61,5 @@ El software está optimizado
 para un bajo consumo de datos, permitiendo su uso en
 zonas con conectividad limitada, promoviendo la equidad en
 el acceso a la salud digital.
+
+## Estado del Proyecto: Desplegado
