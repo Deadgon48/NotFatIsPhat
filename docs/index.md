@@ -6,7 +6,7 @@ Bienvenido a la documentación técnica del Sistema NoFatIsPhat.
 
 ![Diagrama de Contexto C4](diagrama actualizado.png)
 
-## Vista de Contexto (C4 Nivel 1) Mermaid
+## Vista de Contexto (C4 Nivel 1) Mermaid.js
 
 ```mermaid
 graph TD
