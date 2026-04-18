@@ -29,7 +29,13 @@ El sistema sigue una arquitectura **Cliente-Servidor (Fullstack)**:
 * **Procesador:** Dual Core 2.0 GHz o superior.
 * **Espacio en disco:** 200 MB para la aplicación.
 
-## 5. Estructura del Proyecto
+## 5. Seguridad de Datos
+Toda la comunicación entre el paciente 
+y el servidor se realiza vía HTTPS. 
+Los datos biométricos están sujetos a la 
+Ley de Protección de Datos Personales.
+
+## 6. Estructura del Proyecto
 ```text
 NoFatIsPhat/
 ├── config/             # Conexión a BD y constantes

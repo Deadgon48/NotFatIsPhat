@@ -17,15 +17,17 @@ subgraph Plataforma_NoFatIsPhat
     App[Interfaz Web/Móvil]
     API[Lógica de Negocio - PHP]
     DB[(Base de Datos - Pacientes/Dietas)]
+    SSL[Seguridad: Certificado SSL/TLS]
 end
 
 Nutri -->|Asigna Dieta| App
 Pac -->|Registra Consumo| App
 App --> API
 API --> DB
+DB --> SSL
 
 %% Conexión con ODS 3
-DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
+SSL -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ```
 
@@ -33,11 +35,11 @@ DB -.->|Seguimiento Continuo| ODS3((ODS 3: Bienestar))
 
 ### Diccionario de datos
 
-<https://deadgon48.github.io/NoFatIsPhat/datos>
+<https://deadgon48.github.io/NotFatIsPhat/datos>
 
 ### Guía de Despliegue
 
-<https://deadgon48.github.io/NoFatIsPhat/despliege>
+<https://deadgon48.github.io/NotFatIsPhat/despliege>
 
 ## Estado del Proyecto: Desplegado
 
