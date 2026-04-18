@@ -2,9 +2,11 @@
 
 Bienvenido a la documentación técnica del Sistema NoFatIsPhat.
 
+## Vista de Contexto (C4 Nivel 1) png
+
 ![Diagrama de Contexto C4](diagrama actualizado.png)
 
-## Vista de Contexto (C4 Nivel 1)
+## Vista de Contexto (C4 Nivel 1) Mermaid
 
 ```mermaid
 graph TD
