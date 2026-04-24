@@ -40,26 +40,34 @@ npm run dev
 npm run build
 ```
 
-### Declaración de Ética y Gobernanza
+## Manifiesto de Impacto y Ética (ODS 3)
 
-Este repositorio se rige por el principio
-de "Privacidad por Diseño".
+Este proyecto está alineado con el 
+**Objetivo de Desarrollo Sostenible 3: 
+Salud y Bienestar**. Su propósito es 
+facilitar el acceso a un monitoreo nutricional 
+preventivo y profesional para reducir 
+enfermedades no transmisibles.
 
-##### Privacidad de Datos: 
-El código implementa cifrado de hash a contraseñas
-para mejorar la seguridad de los datos y cuentas
-de los pacientes.
+### Consideraciones Éticas y Manejo de Datos
+Bajo el estándar de **"Privacidad por Diseño"**, el sistema garantiza:
 
-#### Proteccion: 
-Solo los nutriologos y los pacientes
-pueden acceder a sus perfiles para eso se
-implementa el principio de priviliegio minimo.
+* **Confidencialidad:** Implementamos cifrado de grado
+  industrial (Hashing) para todas las credenciales de acceso.
+* **Principio de Privilegio Mínimo (PoLP):** El acceso a la
+  información biométrica está estrictamente restringido.
+  Solo el nutriólogo autorizado y el propio paciente
+  pueden visualizar los expedientes clínicos.
+* **Equidad Digital:** El software está optimizado para un
+  bajo consumo de datos, permitiendo que personas en zonas
+  con conectividad limitada (zonas rurales o de baja señal)
+  puedan acceder a su seguimiento de salud.
+* **Integridad y Portabilidad:** El historial de cambios es
+  lineal y transparente, asegurando que la evolución del
+  software sea auditable y confiable para el usuario final.
+
+  ## Estado del Proyecto: Desplegado
 
 
-#### Sostenibilidad y Accesibilidad: 
-El software está optimizado
-para un bajo consumo de datos, permitiendo su uso en
-zonas con conectividad limitada, promoviendo la equidad en
-el acceso a la salud digital.
 
 ## Estado del Proyecto: Desplegado
