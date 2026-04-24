@@ -67,7 +67,3 @@ Bajo el estándar de **"Privacidad por Diseño"**, el sistema garantiza:
   software sea auditable y confiable para el usuario final.
 
   ## Estado del Proyecto: Desplegado
-
-
-
-## Estado del Proyecto: Desplegado
